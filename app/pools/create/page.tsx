@@ -28,9 +28,13 @@ export default function CreatePoolPage() {
 
   const handleCreate = async () => {
     if (!entryFee || !duration || !decimals) return;
+    
+    // Ensure decimals is a number
+    const decimalsNumber = typeof decimals === 'number' ? decimals : undefined;
+    if (!decimalsNumber) return;
 
     try {
-      const entryFeeWei = parseUnits(entryFee, decimals);
+      const entryFeeWei = parseUnits(entryFee, decimalsNumber);
       const durationSeconds = parseInt(duration);
       createPool(entryFeeWei, durationSeconds);
     } catch (error) {
