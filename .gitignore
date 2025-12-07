@@ -40,7 +40,8 @@ typechain-types/
 # Foundry
 out/
 cache/
-lib/
+# Note: lib/ is for Foundry, but we have lib/ for Next.js, so we can't ignore it
+# If you have a Foundry lib directory, use a more specific path
 
 # Deployment addresses
 deployments/*.json
