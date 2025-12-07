@@ -16,13 +16,16 @@ export default function LeaderboardPage() {
     return () => clearInterval(interval);
   }, [refetch]);
 
+  // Ensure topPlayers is an array
+  const players = Array.isArray(topPlayers) ? topPlayers : [];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-900 to-purple-900 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-xl p-6">
           <h1 className="text-3xl font-bold mb-6">🏆 Leaderboard</h1>
 
-          {topPlayers && topPlayers.length > 0 ? (
+          {players.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -36,7 +39,7 @@ export default function LeaderboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {topPlayers.map((player: any, index: number) => {
+                  {players.map((player, index: number) => {
                     const badgeLevel = player.highestBadge as BadgeLevel;
                     const bestTime =
                       player.bestReactionTime ===

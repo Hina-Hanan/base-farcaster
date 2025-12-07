@@ -85,6 +85,15 @@ export function useRecordReaction() {
   };
 }
 
+type PlayerData = {
+  player: `0x${string}`;
+  bestReactionTime: bigint;
+  totalGames: bigint;
+  totalWins: bigint;
+  highestBadge: number;
+  lastPlayed: bigint;
+};
+
 export function useTopPlayers(limit: number = 10) {
   const chainId = useChainId();
   const addresses = getContractAddresses(chainId);
@@ -100,7 +109,7 @@ export function useTopPlayers(limit: number = 10) {
   });
 
   return {
-    topPlayers,
+    topPlayers: (topPlayers as PlayerData[]) || [],
     refetch,
   };
 }
