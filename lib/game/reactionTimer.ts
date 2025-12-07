@@ -92,4 +92,3 @@ export function getBadgeEmoji(level: BadgeLevel): string {
   }
 }
 
-

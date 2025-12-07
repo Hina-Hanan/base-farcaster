@@ -135,4 +135,3 @@ export function getScenarioById(id: string): DisasterScenario | undefined {
   return DISASTER_SCENARIOS.find((scenario) => scenario.id === id);
 }
 
-
