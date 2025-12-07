@@ -10,6 +10,15 @@ import { DISASTER_POOL_ABI, DISASTER_POOL_FACTORY_ABI } from "@/lib/contracts/ab
 import { getContractAddresses } from "@/lib/contracts/addresses";
 import { Address } from "viem";
 
+type Participant = {
+  player: `0x${string}`;
+  reactionTime: bigint;
+  hasSubmitted: boolean;
+  submittedAt: bigint;
+};
+
+type PoolStatus = [bigint, bigint, `0x${string}`, boolean, boolean];
+
 export function useDisasterPool(poolAddress?: Address) {
   const chainId = useChainId();
 
@@ -41,9 +50,9 @@ export function useDisasterPool(poolAddress?: Address) {
   });
 
   return {
-    poolStatus,
-    participants,
-    entryFee,
+    poolStatus: poolStatus as PoolStatus | undefined,
+    participants: (participants as Participant[]) || [],
+    entryFee: entryFee as bigint | undefined,
     refetch,
   };
 }

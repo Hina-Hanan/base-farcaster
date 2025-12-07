@@ -55,22 +55,25 @@ export default function PoolGamePage() {
     functionName: "decimals",
   });
 
+  // Ensure participants is an array
+  const participantsArray = Array.isArray(participants) ? participants : [];
+
   const isParticipant =
-    participants &&
+    participantsArray.length > 0 &&
     address &&
-    participants.some((p: any) => p.player.toLowerCase() === address.toLowerCase());
+    participantsArray.some((p) => p.player.toLowerCase() === address.toLowerCase());
 
   const hasSubmitted =
-    participants &&
+    participantsArray.length > 0 &&
     address &&
-    participants.some(
-      (p: any) =>
+    participantsArray.some(
+      (p) =>
         p.player.toLowerCase() === address.toLowerCase() && p.hasSubmitted
     );
 
-  const isClosed = poolStatus?.[3] ?? false;
-  const isStarted = poolStatus?.[4] ?? false;
-  const winner = poolStatus?.[2] as Address | undefined;
+  const isClosed = Array.isArray(poolStatus) && poolStatus[3] ? poolStatus[3] : false;
+  const isStarted = Array.isArray(poolStatus) && poolStatus[4] ? poolStatus[4] : false;
+  const winner = Array.isArray(poolStatus) && poolStatus[2] ? (poolStatus[2] as Address) : undefined;
 
   useEffect(() => {
     if (!isConnected) {
@@ -79,10 +82,11 @@ export default function PoolGamePage() {
   }, [isConnected, router]);
 
   const handleJoin = async () => {
-    if (!entryFee || !decimals) return;
+    if (!entryFee || typeof entryFee !== 'bigint' || !decimals) return;
 
     // Check if approval is needed
-    if (!allowance || allowance < entryFee) {
+    const allowanceValue = allowance && typeof allowance === 'bigint' ? allowance : BigInt(0);
+    if (allowanceValue < entryFee) {
       // Approve USDC
       approveUSDC({
         address: addresses.USDC as `0x${string}`,
@@ -135,7 +139,7 @@ export default function PoolGamePage() {
   }
 
   const entryFeeFormatted =
-    entryFee && decimals ? formatUnits(entryFee, decimals) : "0";
+    entryFee && typeof entryFee === 'bigint' && decimals && typeof decimals === 'number' ? formatUnits(entryFee, decimals) : "0";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-900 to-purple-900 p-4">
@@ -144,7 +148,7 @@ export default function PoolGamePage() {
           <h1 className="text-3xl font-bold mb-4">Pool Game</h1>
           <div className="space-y-2 text-gray-600">
             <p>Entry Fee: {entryFeeFormatted} USDC</p>
-            <p>Participants: {(poolStatus?.[0] ?? 0).toString()}</p>
+            <p>Participants: {Array.isArray(poolStatus) && poolStatus[0] ? poolStatus[0].toString() : "0"}</p>
             <p>
               Status:{" "}
               <span
@@ -181,9 +185,9 @@ export default function PoolGamePage() {
         {isParticipant && !isStarted && !isClosed && address && (
           <div className="bg-white rounded-lg shadow-xl p-6 text-center">
             <p className="text-gray-600 mb-4">Waiting for pool to start...</p>
-            {participants && participants.length > 0 && (
+            {participantsArray.length > 0 && (
               <p className="text-sm text-gray-500">
-                {participants.length} participant(s) joined
+                {participantsArray.length} participant(s) joined
               </p>
             )}
           </div>
