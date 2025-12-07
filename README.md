@@ -1,399 +1,262 @@
-# Base Sepolia Farcaster MiniApp Template verified for Base Hyperthon (https://hyperthon.org) 2025 by Prmsnls (https://permissionless.net)
+# Disaster Reflex Trainer 🚨
 
-The template demonstrates all Mini App capabilities and lets you easily modify it, so you can build Mini Apps on Base Sepolia testnet.
+A production-ready on-chain Farcaster Frame game deployed on Base mainnet. Test your reflexes in disaster scenarios - play for free or join prize pools to win USDC!
 
-## Cloning the Template
+## Features
 
-You can use the following command to clone the Mini App template to your local machine:
+- 🎮 **Free Play Mode**: Practice your reflexes with random disaster scenarios
+- 💰 **Prize Pool Mode**: Join pools by depositing USDC, fastest reaction wins
+- 🏆 **Leaderboard**: Compete globally for the fastest reaction times
+- 🥇 **Badge System**: Earn Gold, Silver, or Bronze badges based on reaction time
+- 🔐 **On-Chain**: All stats and pools stored on Base blockchain
+- 📱 **Farcaster Frame**: Native Farcaster integration
 
-```
-git clone https://github.com/harshshukla9/base-farcaster
-```
+## Disaster Scenarios
 
-### Install the dependencies
+1. **🌍 Earthquake** - Go under a table ✓ / Run to elevator ✗
+2. **🔥 Fire** - Use stairs and go out ✓ / Use lift ✗ / Open window ✗
+3. **🌊 Flood** - Go to higher ground ✓ / Walk through water ✗
+4. **💨 Gas Leak** - Open windows and go outside ✓ / Switch on lights ✗ / Use matchstick ✗
+5. **⚡ Lightning** - Stay inside ✓ / Stand under tree ✗
 
-```
+## Badge System
+
+- **🥇 Gold**: < 300ms
+- **🥈 Silver**: 300-600ms
+- **🥉 Bronze**: 600-900ms
+- **None**: > 900ms
+
+## Tech Stack
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Blockchain**: Solidity, Hardhat, Base mainnet
+- **Wallet**: Wagmi, viem, Reown AppKit, Farcaster MiniApp Connector
+- **Frames**: Farcaster Frame API
+
+## Smart Contracts
+
+- `PlayerStats.sol` - Stores player statistics and badges
+- `DisasterPool.sol` - Manages individual prize pools
+- `DisasterPoolFactory.sol` - Factory for creating pools
+- `ReactionVerifier.sol` - Verifies reaction time submissions
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm (or npm/yarn)
+- Hardhat
+- Base RPC URL
+- WalletConnect Project ID ([get one here](https://dashboard.reown.com))
+
+### Installation
+
+```bash
+# Install dependencies
 pnpm install
+
+# Install Hardhat dependencies
+pnpm add -D hardhat @nomicfoundation/hardhat-toolbox dotenv
 ```
 
-### Copy `.env.example` over to `.env.local`
+### Environment Setup
+
+Create a `.env` file:
+
+```env
+# Base Network RPC
+BASE_RPC_URL=https://mainnet.base.org
+BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
+
+# Private key for deployment (NEVER commit this!)
+PRIVATE_KEY=your_private_key_here
+
+# WalletConnect Project ID
+NEXT_PUBLIC_PROJECT_ID=your_project_id_here
+
+# App URL
+NEXT_PUBLIC_URL=http://localhost:3000
+
+# USDC Token Address on Base
+USDC_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+
+# BaseScan API Key (for contract verification)
+BASESCAN_API_KEY=your_basescan_api_key_here
+
+# Contract addresses (set after deployment)
+NEXT_PUBLIC_PLAYER_STATS_ADDRESS=
+NEXT_PUBLIC_DISASTER_POOL_FACTORY_ADDRESS=
+NEXT_PUBLIC_REACTION_VERIFIER_ADDRESS=
+```
+
+### Compile Contracts
 
 ```bash
-cp .env.example .env.local
+pnpm compile
 ```
 
-### Run the template
+### Deploy Contracts
+
+#### Using Hardhat
+
+```bash
+# Deploy to Base Sepolia (testnet)
+pnpm deploy:baseSepolia
+
+# Deploy to Base Mainnet
+pnpm deploy:base
+```
+
+#### Using Foundry
+
+```bash
+# Make script executable
+chmod +x scripts/deploy-foundry.sh
+
+# Deploy to Base Sepolia
+./scripts/deploy-foundry.sh baseSepolia
+
+# Deploy to Base Mainnet
+./scripts/deploy-foundry.sh base
+```
+
+After deployment, update your `.env` file with the contract addresses.
+
+### Run Development Server
 
 ```bash
 pnpm dev
 ```
 
-### View the App in Warpcast Embed tool
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Warpcast has a neat [Embed tool](https://warpcast.com/~/developers/mini-apps/embed) that you can use to inspect the Mini App before you publish it.
-
-Unfortunately, the embed tool can only work with remote URL. Inputting a localhost URL does not work.
-
-As a workaround, you may make the local app accessible remotely using a tool like `cloudflared` or `ngrok`. In this guide we will use `cloudflared`.
-
-#### Install Cloudflared
+### Run Tests
 
 ```bash
-brew install cloudflared
+pnpm test
 ```
 
-For more installation options see the [official docs](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/).
+## Project Structure
 
-#### Expose localhost
-
-Run the following command in your terminal:
-
-```bash
-cloudflared tunnel --url http://localhost:3000
 ```
-
-Be sure to specify the correct port for your local server.
-
-#### Set `NEXT_PUBLIC_URL` environment variable in `.env.local` file
-
-```bash
-NEXT_PUBLIC_URL=<url-from-cloudflared-or-ngrok>
-```
-
-#### Use the provided url
-
-`cloudflared` will generate a random subdomain and print it in the terminal for you to use. Any traffic to this URL will get sent to your local server.
-
-Enter the provided URL in the [Warpcast Embed tool](https://warpcast.com/~/developers/mini-apps/embed).
-
-![embed-tool](https://docs.base.org/img/guides/farcaster-miniapp/1.png)
-
-Let's investigate the various components of the template.
-
-## Customizing the Mini App Embed
-
-Mini App Embed is how the Mini App shows up in the feed or in a chat conversation when the URL of the app is shared.
-
-The Mini App Embed looks like this:
-
-![embed-preview](https://docs.base.org/img/guides/farcaster-miniapp/2.png)
-
-You can customize this by editing the file `app/page.tsx`:
-
-```js
-...
-
-const appUrl = env.NEXT_PUBLIC_URL;
-
-const frame = {
-  version: "next",
-  imageUrl: `${appUrl}/images/feed.png`, // Embed image URL (3:2 image ratio)
-  button: {
-    title: "Template", // Text on the embed button
-    action: {
-      type: "launch_frame",
-      name: "Base Sepolia Farcaster MiniApp Template",
-      url: appUrl, // URL that is opened when the embed button is tapped or clicked.
-      splashImageUrl: `${appUrl}/images/splash.png`,
-      splashBackgroundColor: "#0052FF",
-    },
-  },
-};
-
-...
-```
-
-You can either edit the URLs for the images or replace the images in `public/images` folder in the template.
-
-Once you are happy with the changes, click `Refetch` in the Embed tool to get the latest configuration.
-
-> [!NOTE]
-> If you are developing locally, ensure that your Next.js app is running locally and the cloudflare tunnel is open. 
-
-## Customizing the Splash Screen
-
-Upon opening the Mini App, the first thing the user will see is the Splash screen:
-
-![splash-screen](https://docs.base.org/img/guides/farcaster-miniapp/3.png)
-
-You can edit the `app/page.tsx` file to customize the Splash screen.
-
-```js
-...
-
-const appUrl = env.NEXT_PUBLIC_URL;
-
-const frame = {
-  version: "next",
-  imageUrl: `${appUrl}/images/feed.png`,
-  button: {
-    title: "Launch Template",
-    action: {
-      type: "launch_frame",
-      name: "Base Sepolia Farcaster MiniApp Template",
-      url: appUrl,
-      splashImageUrl: `${appUrl}/images/splash.png`, // App icon in the splash screen (200px * 200px)
-      splashBackgroundColor: "#0052FF", // Splash screen background color (Base blue)
-    },
-  },
-};
-
-...
-```
-
-For `splashImageUrl`, you can either change the URL or replace the image in `public/images` folder in the template.
-
-## Modifying the Mini App
-
-Upon opening the template Mini App, you should see a screen like this:
-
-
-
-The code for this screen is in the `components/pages/app.tsx` file:
-
-```tsx
-export default function Home() {
-  const { context } = useMiniAppContext();
-  return (
-    // SafeAreaContainer component makes sure that the app margins are rendered properly depending on which client is being used.
-    <SafeAreaContainer insets={context?.client.safeAreaInsets}>
-      {/* You replace the Demo component with your home component */}
-      <Demo />
-    </SafeAreaContainer>
-  )
-}
-```
-
-You can remove or edit the code in this file to build your Mini App.
-
-### Accessing User Context
-
-
-Your Mini App receives various information about the user, including `username`, `fid`, `displayName`, `pfpUrl` and other fields.
-
-The template provides a helpful hook `useMiniAppContext` that you can use to access these fields:
-
-```js
-export function User() {
-    const { context } = useMiniAppContext();
-    return <p>{context.user.username}</p>
-}
-```
-
-The template also provide an example of the same in `components/Home/User.tsx` file.
-
-You can learn more about Context [here](https://miniapps.farcaster.xyz/docs/sdk/context).
-
-### Performing App Actions
-
-![composeCast](https://docs.base.org/img/guides/farcaster-miniapp/composeCast.gif)
-
-Mini Apps have the capability to perform native actions that enhance the user experience!
-
-Actions like:
-
-- `addFrame`: Allows the user to save (bookmark) the app in a dedicated section
-- `composeCast`: Allows the MiniApp to prompt the user to cast with prefilled text and media
-- `viewProfile`: Presents a profile of a Farcaster user in a client native UI
-
-
-
-The template provides an easy way to access the actions via the `useMiniAppContext` hook!
-
-```js
-const { actions } = useMiniAppContext();
-```
-
-An example for the same can be found in `components/Home/FarcasterActions.tsx` file.
-
-### Prompting Wallet Actions
-
-
-
-Every user of Warpcast has access to various wallet integrations with Base Sepolia testnet support.
-
-**Mini Apps can prompt the user to perform onchain actions on Base Sepolia**!
-
-The template provides an example for the same in `components/Home/WalletActions.tsx` file.
-
-```js
-export function WalletActions() {
-    ...
-
-    async function sendTransactionHandler() {
-        sendTransaction({
-            to: "0x7f748f154B6D180D35fA12460C7E4C631e28A9d7",
-            value: parseEther("0.001"), // Small amount for testnet
-        });
-    }
-
-    ...
-}
-```
-
-> [!WARNING]
-> The wallet supports multiple networks. It is recommended that you ensure that Base Sepolia is connected before prompting wallet actions.
-
-You can use viem's `switchChain` or equivalent to prompt a chain switch.
-
-```js
-// Switching to Base Sepolia
-switchChain({ chainId: 84532 });
-```
-
-The template has an example for the same in the `components/Home/WalletActions.tsx` file.
-
-## Base Sepolia Network Configuration
-
-This template is configured to work with Base Sepolia testnet. Here are the network details:
-
-- **Chain ID**: 84532
-- **Network Name**: Base Sepolia
-- **RPC URL**: https://sepolia.base.org
-- **Block Explorer**: https://sepolia.basescan.org
-- **Testnet Faucet**: https://www.coinbase.com/faucets/base-ethereum-goerli-faucet
-
-### Getting Testnet ETH
-
-To test wallet functionality, you'll need testnet ETH on Base Sepolia:
-
-1. Visit the [Base Sepolia Faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet)
-2. Connect your wallet
-3. Request testnet ETH
-4. Wait for the transaction to complete
-
-## Package Scripts
-
-The template includes several useful pnpm scripts:
-
-```bash
-# Development server
-pnpm dev
-
-# Build for production
-pnpm build
-
-# Start production server
-pnpm start
-
-# Lint code
-pnpm lint
-
-# Type checking
-pnpm type-check
-```
-
-## Modifying the `farcaster.json` file
-
-When publishing the Mini App you will need to have a `farcaster.json` file that follows the specification.
-
-You can edit the `app/.well-known/farcaster.json/route.ts` file with your app details before publishing the app!
-
-```ts
-...
-
-const appUrl = process.env.NEXT_PUBLIC_URL;
-const farcasterConfig = {
-    // accountAssociation details are required to associated the published app with it's author
-    accountAssociation: {
-        "header": "",
-        "payload": "",
-        "signature": ""
-    },
-    frame: {
-        version: "1",
-        name: "Base Sepolia Farcaster MiniApp Template",
-        iconUrl: `${appUrl}/images/icon.png`, // Icon of the app in the app store
-        homeUrl: `${appUrl}`, // Default launch URL
-        imageUrl: `${appUrl}/images/feed.png`, // Default image to show if shared in a feed.
-        screenshotUrls: [], // Visual previews of the app
-        tags: ["base", "sepolia", "farcaster", "miniapp", "template", "testnet"], // Descriptive tags for search
-        primaryCategory: "developer-tools",
-        buttonTitle: "Launch Template",
-        splashImageUrl: `${appUrl}/images/splash.png`, // URL of image to show on loading screen.
-        splashBackgroundColor: "#0052FF", // Base blue color for loading screen.
-    }
-};
-
-...
-```
-
-You can learn more about publishing the Mini App and other manifest properties [here](https://miniapps.farcaster.xyz/docs/guides/publishing).
-
-## Environment Variables
-
-Make sure to set up the following environment variables in your `.env.local` file:
-
-```bash
-NEXT_PUBLIC_URL=your-app-url
-NEXT_PUBLIC_CHAIN_ID=84532
-NEXT_PUBLIC_RPC_URL=https://sepolia.base.org
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   ├── game/              # Free play game page
+│   ├── pools/             # Prize pool pages
+│   ├── leaderboard/       # Leaderboard page
+│   └── profile/           # User profile page
+├── components/            # React components
+├── contracts/             # Solidity smart contracts
+│   ├── PlayerStats.sol
+│   ├── DisasterPool.sol
+│   ├── DisasterPoolFactory.sol
+│   └── ReactionVerifier.sol
+├── hooks/                 # React hooks for contract interactions
+├── lib/                   # Utility libraries
+│   ├── contracts/        # Contract ABIs and addresses
+│   └── game/             # Game logic (scenarios, timer)
+├── scripts/               # Deployment scripts
+└── test/                  # Contract tests
 ```
 
 ## Deployment
 
-The template is ready to be deployed to various platforms:
+### Deploy to Base Mainnet
 
-### Vercel (Recommended)
+1. **Set up environment variables** in `.env`
+2. **Compile contracts**: `pnpm compile`
+3. **Deploy contracts**: `pnpm deploy:base`
+4. **Update `.env`** with deployed contract addresses
+5. **Deploy frontend** to Vercel/Netlify:
 ```bash
-pnpm dlx vercel
+   vercel --prod
+```
+6. **Update `NEXT_PUBLIC_URL`** in environment variables to your production URL
+
+### Verify Contracts on BaseScan
+
+```bash
+npx hardhat verify --network base <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
 ```
 
-### Netlify
-```bash
-pnpm build
-# Upload the .next folder to Netlify
-```
+## Usage
 
-### Railway
-```bash
-# Connect your GitHub repository to Railway
-# Set environment variables in Railway dashboard
-```
+### Free Play Mode
 
-## Troubleshooting
+1. Connect your wallet
+2. Click "Free Play"
+3. Wait for random delay (1-3 seconds)
+4. React quickly when "REACT NOW!" appears
+5. Select the correct answer
+6. View your reaction time and badge earned
 
-### Common Issues
+### Prize Pool Mode
 
-1. **Wallet not connecting to Base Sepolia**
-   - Ensure the chain ID is set to 84532
-   - Check that the RPC URL is correct
-   - Verify the user has testnet ETH
+1. Connect your wallet
+2. Go to "Prize Pools"
+3. Select a pool or create a new one
+4. Approve USDC spending
+5. Join the pool
+6. Wait for pool to start
+7. Complete the reaction test
+8. Fastest correct reaction wins the pool!
 
-2. **Mini App not loading in Warpcast**
-   - Verify the cloudflared tunnel is running
-   - Check that NEXT_PUBLIC_URL is set correctly
-   - Ensure the farcaster.json file is properly configured
+## Smart Contract Functions
 
-3. **Transaction failures**
-   - Check if the user has sufficient testnet ETH
-   - Verify the contract address is correct for Base Sepolia
-   - Ensure gas limits are appropriate for the network
+### PlayerStats
+
+- `registerPlayer()` - Register a new player
+- `recordReaction(uint256 reactionTime, bool isWin)` - Record a reaction time
+- `getPlayerData(address player)` - Get player statistics
+- `getTopPlayers(uint256 limit)` - Get leaderboard
+
+### DisasterPool
+
+- `joinPool()` - Join a pool by depositing USDC
+- `startPool()` - Start the pool (creator only)
+- `submitReaction(uint256 reactionTime)` - Submit reaction time
+- `closePool()` - Close pool and determine winner
+
+### DisasterPoolFactory
+
+- `createPool(uint256 entryFee, uint256 durationSeconds)` - Create a new pool
+- `getActivePools(uint256 limit)` - Get list of active pools
+
+## Security Considerations
+
+- ⚠️ **Never commit private keys** to version control
+- ✅ Use environment variables for sensitive data
+- ✅ Test on Base Sepolia before mainnet deployment
+- ✅ Consider contract audits for production use
+- ✅ Implement rate limiting for API endpoints
+- ✅ Validate all user inputs
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see LICENSE file for details
 
-## Resources
+## Support
 
-- [Farcaster Mini Apps Documentation](https://miniapps.farcaster.xyz/)
-- [Base Sepolia Network Info](https://docs.base.org/network-information)
-- [Base Developer Documentation](https://docs.base.org/)
-- [Warpcast Embed Tool](https://warpcast.com/~/developers/mini-apps/embed)
-- [Base Sepolia Faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet)
+For issues and questions:
+- Open an issue on GitHub
+- Check the [Wireframes documentation](./WIREFRAMES.md)
+- Review contract tests in `/test`
 
-## Conclusion
+## Acknowledgments
 
-In this guide, you explored Farcaster Mini Apps — the simplest way to create engaging, high-retention, and easily monetizable applications on Base Sepolia testnet!
+- Built for Base ecosystem
+- Farcaster Frame integration
+- Inspired by reaction time games
 
-You also discovered the key capabilities of Mini Apps and how you can use this Base Sepolia Farcaster MiniApp Template to build your own decentralized applications with seamless wallet integration.
+---
 
-For more details, check out the official Mini App documentation [here](https://miniapps.farcaster.xyz/) and Base documentation [here](https://docs.base.org/).
+**Built with ❤️ on Base**

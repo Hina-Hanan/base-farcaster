@@ -1,28 +1,31 @@
-import App from '@/components/pages/app'
 import { APP_URL } from '@/lib/constants'
 import type { Metadata } from 'next'
+import LandingPage from '@/components/pages/landing'
 
 const frame = {
   version: 'next',
   imageUrl: `${APP_URL}/images/base.png`,
   button: {
-    title: 'Launch Template',
+    title: 'Play Disaster Reflex Trainer',
     action: {
       type: 'launch_frame',
-      name: 'Base Farcaster MiniApp Template',
+      name: 'Disaster Reflex Trainer',
       url: APP_URL,
       splashImageUrl: `${APP_URL}/images/splash.png`,
-      splashBackgroundColor: '#f7f7f7',
+      splashBackgroundColor: '#1e3a8a',
     },
   },
 }
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Base Farcaster MiniApp Template',
+    metadataBase: new URL(APP_URL),
+    title: 'Disaster Reflex Trainer - Farcaster Frame Game',
+    description: 'Test your reflexes in disaster scenarios. Free play or join prize pools on Base!',
     openGraph: {
-      title: 'Base Farcaster MiniApp Template',
-      description: 'A template for building mini-apps on Farcaster and Base',
+      title: 'Disaster Reflex Trainer',
+      description: 'Test your reflexes in disaster scenarios. Free play or join prize pools on Base!',
+      images: [`${APP_URL}/images/splash.png`],
     },
     other: {
       'fc:frame': JSON.stringify(frame),
@@ -31,5 +34,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Home() {
-  return <App />
+  return <LandingPage />
 }
