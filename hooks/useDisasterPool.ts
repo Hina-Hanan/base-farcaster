@@ -154,8 +154,8 @@ export function useDisasterPoolFactory() {
   });
 
   return {
-    poolCount,
-    activePools,
+    poolCount: poolCount as bigint | undefined,
+    activePools: (activePools as Address[]) || [],
     refetchActivePools,
   };
 }

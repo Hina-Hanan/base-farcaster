@@ -16,6 +16,9 @@ export default function PoolsPage() {
   const chainId = useChainId();
   const addresses = getContractAddresses(chainId);
   const { activePools, refetchActivePools } = useDisasterPoolFactory();
+  
+  // Ensure activePools is always an array
+  const poolsArray = Array.isArray(activePools) ? activePools : [];
 
   useEffect(() => {
     if (!isConnected) {
@@ -49,9 +52,9 @@ export default function PoolsPage() {
           </p>
         </div>
 
-        {activePools && activePools.length > 0 ? (
+        {poolsArray.length > 0 ? (
           <div className="space-y-4">
-            {(activePools as Address[]).map((poolAddress, index) => (
+            {poolsArray.map((poolAddress, index) => (
               <PoolCard key={index} poolAddress={poolAddress} />
             ))}
           </div>
