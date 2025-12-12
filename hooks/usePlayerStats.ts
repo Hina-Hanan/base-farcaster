@@ -4,25 +4,6 @@ import { useReadContract, useWriteContract, useWaitForTransactionReceipt, useCha
 import { PLAYER_STATS_ABI } from "@/lib/contracts/abis";
 import { getContractAddresses } from "@/lib/contracts/addresses";
 
-export function usePlayerStats(address?: string) {
-  const chainId = useChainId();
-  const addresses = getContractAddresses(chainId);
-
-  const { data: playerData, refetch } = useReadContract({
-    address: addresses.PLAYER_STATS as `0x${string}`,
-    abi: PLAYER_STATS_ABI,
-    functionName: "getPlayerData",
-    args: address ? [address as `0x${string}`] : undefined,
-    query: {
-      enabled: !!address && !!addresses.PLAYER_STATS,
-    },
-  });
-
-  return {
-    playerData,
-    refetch,
-  };
-}
 
 export function useRegisterPlayer() {
   const chainId = useChainId();
@@ -93,6 +74,26 @@ type PlayerData = {
   highestBadge: number;
   lastPlayed: bigint;
 };
+
+export function usePlayerStats(address?: string) {
+  const chainId = useChainId();
+  const addresses = getContractAddresses(chainId);
+
+  const { data: playerData, refetch } = useReadContract({
+    address: addresses.PLAYER_STATS as `0x${string}`,
+    abi: PLAYER_STATS_ABI,
+    functionName: "getPlayerData",
+    args: address ? [address as `0x${string}`] : undefined,
+    query: {
+      enabled: !!address && !!addresses.PLAYER_STATS,
+    },
+  });
+
+  return {
+    playerData: playerData as PlayerData | undefined,
+    refetch,
+  };
+}
 
 export function useTopPlayers(limit: number = 10) {
   const chainId = useChainId();

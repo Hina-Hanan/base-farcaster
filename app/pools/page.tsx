@@ -94,19 +94,22 @@ function PoolCard({ poolAddress }: { poolAddress: Address }) {
     return () => clearInterval(interval);
   }, [refetch]);
 
+  // Ensure decimals is a number
+  const decimalsNumber = typeof decimals === 'number' ? decimals : undefined;
+
   const entryFeeFormatted =
-    entryFee && decimals
-      ? formatUnits(entryFee, decimals)
+    entryFee && typeof entryFee === 'bigint' && decimalsNumber !== undefined
+      ? formatUnits(entryFee, decimalsNumber)
       : "0";
 
   const participantsCount = poolStatus?.[0] ?? 0;
-  const totalPrize = poolStatus?.[1] ?? 0n;
+  const totalPrize = poolStatus?.[1] ?? BigInt(0);
   const isClosed = poolStatus?.[3] ?? false;
   const isStarted = poolStatus?.[4] ?? false;
 
   const totalPrizeFormatted =
-    totalPrize && decimals
-      ? formatUnits(totalPrize, decimals)
+    totalPrize && typeof totalPrize === 'bigint' && decimalsNumber !== undefined
+      ? formatUnits(totalPrize, decimalsNumber)
       : "0";
 
   return (

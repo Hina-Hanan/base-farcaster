@@ -73,9 +73,10 @@ const metadata = {
 // Initialize Reown AppKit (browser wallet modal)
 let appKitInitialized = false;
 try {
-  // @ts-expect-error - Known type mismatch between @reown/appkit versions, works at runtime
+  // Type assertion needed due to version mismatch between @reown/appkit packages
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createAppKit({
-    adapters: [wagmiAdapter],
+    adapters: [wagmiAdapter as any],
     projectId,
     networks: [base],
     defaultNetwork: base,

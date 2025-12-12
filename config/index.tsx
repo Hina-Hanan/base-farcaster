@@ -15,10 +15,11 @@ if (process.env.NODE_ENV === 'development' && projectId === 'placeholder-project
 export const networks = [base, mainnet, arbitrum]
 
 //Set up the Wagmi Adapter (Config)
+// Type assertion needed due to version mismatch between @reown/appkit packages
 export const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   projectId,
-  networks
+  networks: networks as any
 })
 
 export const config = wagmiAdapter.wagmiConfig

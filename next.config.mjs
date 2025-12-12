@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Production optimizations (only for production builds)
-  // Don't use 'standalone' in development - it can cause issues with ngrok
-  ...(process.env.NODE_ENV === 'production' && { output: 'standalone' }),
+  // Production optimizations
+  // Note: 'standalone' output causes symlink issues on Windows
+  // Vercel handles optimization automatically, so we don't need it
   reactStrictMode: true,
   swcMinify: true,
   
