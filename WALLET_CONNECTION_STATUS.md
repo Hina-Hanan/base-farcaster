@@ -117,3 +117,5 @@ The wallet connection is **fully functional**. Click the button and it should wo
 
 If you encounter any issues, check the browser console (F12) and share the error messages.
 
+
+

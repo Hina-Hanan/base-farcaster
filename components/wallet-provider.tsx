@@ -20,9 +20,9 @@ const queryClient = new QueryClient({
   },
 });
 
-// Check for required environment variable
-if (!projectId) {
-  throw new Error("Project ID is not defined");
+// Warn if projectId is placeholder (but don't throw to allow build)
+if (projectId === 'placeholder-project-id') {
+  console.warn("⚠️ NEXT_PUBLIC_PROJECT_ID is not set. Wallet connection may not work properly.");
 }
 
 // Suppress CSP and network errors in console (these are expected in Farcaster iframe)

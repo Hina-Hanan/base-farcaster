@@ -1,21 +1,20 @@
 import { NextResponse } from "next/server";
-import { APP_URL } from "../../../lib/constants";
+import { APP_URL } from "@/lib/constants";
 
 export async function GET() {
   const farcasterConfig = {
-    // TODO: Add your own account association
     frame: {
       version: "1",
-      name: "Monad Farcaster MiniApp Template",
-      iconUrl: `${APP_URL}/images/icon.png`,
+      name: "Disaster Reflex Trainer",
+      iconUrl: `${APP_URL}/images/base.png`,
       homeUrl: `${APP_URL}`,
-      imageUrl: `${APP_URL}/images/feed.png`,
+      imageUrl: `${APP_URL}/images/splash.png`,
       screenshotUrls: [],
-      tags: ["monad", "farcaster", "miniapp", "template"],
-      primaryCategory: "developer-tools",
-      buttonTitle: "Launch Template",
+      tags: ["game", "farcaster", "miniapp", "base", "reaction"],
+      primaryCategory: "games",
+      buttonTitle: "Play Disaster Reflex Trainer",
       splashImageUrl: `${APP_URL}/images/splash.png`,
-      splashBackgroundColor: "#ffffff",
+      splashBackgroundColor: "#1e3a8a",
       webhookUrl: `${APP_URL}/api/webhook`,
     },
   };

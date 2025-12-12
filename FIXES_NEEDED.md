@@ -95,3 +95,5 @@ Multiple versions of Lit loaded
 
 **Summary**: The app is working! The 403 errors are just warnings about the placeholder Project ID. You can test the UI now, and add the real Project ID when you're ready to test wallet connection.
 
+
+

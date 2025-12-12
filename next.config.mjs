@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Production optimizations
+  output: 'standalone', // Optimize for Vercel deployment
+  reactStrictMode: true,
+  swcMinify: true,
+  
   webpack: (config, { isServer }) => {
     config.resolve = config.resolve || {}
     config.resolve.alias = {

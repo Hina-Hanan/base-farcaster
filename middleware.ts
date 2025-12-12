@@ -13,7 +13,8 @@ export function middleware(request: NextRequest) {
     "font-src 'self' data: https://fonts.gstatic.com",
     "img-src 'self' data: blob: https: w3.org/svg/2000",
     "connect-src 'self' https://*.walletconnect.com https://*.walletconnect.org https://explorer-api.walletconnect.com https://*.reown.com https://*.rpc.privy.systems https://*.farcaster.xyz https://*.warpcast.com https://*.wrpcd.net wss://*.walletconnect.com wss://*.walletconnect.org",
-    "frame-src 'self' https://*.walletconnect.com https://*.walletconnect.org https://*.reown.com",
+    "frame-src 'self' https://*.walletconnect.com https://*.walletconnect.org https://*.reown.com https://*.farcaster.xyz https://*.warpcast.com https://*.ngrok-free.app https://*.ngrok.io",
+    "frame-ancestors 'self' https://*.farcaster.xyz https://*.warpcast.com https://*.ngrok-free.app https://*.ngrok.io",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
   ].join('; ')
@@ -22,7 +23,9 @@ export function middleware(request: NextRequest) {
   
   // Add other security headers
   response.headers.set('X-Content-Type-Options', 'nosniff')
-  response.headers.set('X-Frame-Options', 'SAMEORIGIN')
+  // Remove X-Frame-Options to allow Farcaster embedding, or set to ALLOWALL for ngrok
+  // Note: X-Frame-Options: SAMEORIGIN blocks Farcaster from embedding
+  // response.headers.set('X-Frame-Options', 'SAMEORIGIN') // Commented out to allow Farcaster embedding
   response.headers.set('X-XSS-Protection', '1; mode=block')
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
 
@@ -41,3 +44,5 @@ export const config = {
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }
+
+
