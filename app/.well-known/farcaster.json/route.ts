@@ -49,7 +49,7 @@ export async function GET() {
       splashBackgroundColor: "#1e3a8a",
       webhookUrl: `${APP_URL}/api/webhook`,
       subtitle: "Fastest fingers first",
-      description: "Disaster Reflex Trainer is a Farcaster Mini App game on Base mainnet that tests reflexes in disaster scenarios. Players face earthquakes, fires, floods, gas leaks, and lightning and must choose the correct action quickly. The app offers free practice and competitive prize pools where players deposit USDC and the fastest correct reaction wins. All gameplay, stats, leaderboards, and pools are stored on-chain via Solidity contracts. Players earn Gold, Silver, or Bronze badges based on reaction time (<300ms, 300-600ms, 600-900ms). Built with Next.js 14, TypeScript, and integrated with Farcaster Frames, it combines education, competition, and on-chain gaming in the Farcaster ecosystem.",
+      description: "Disaster Reflex Trainer is a Farcaster Mini App game on Base mainnet that tests reflexes in disaster scenarios. Players face earthquakes, fires, floods, gas leaks, and lightning and must choose the correct action quickly. The app offers free practice and competitive prize pools where players deposit USDC and the fastest correct reaction wins. All gameplay, stats, leaderboards, and pools are stored on-chain via Solidity contracts. Players earn Gold, Silver, or Bronze badges based on reaction time (<300ms, 300-600ms, 600-900ms).",
       tagline: "disaster reflex trainer app",
       ogDescription: "Disaster Reflex Trainer is a Farcaster Mini App game on Base mainnet.",
     },
